@@ -4,9 +4,98 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:orderType="LabBill.Core.Models.OrderType" 
+    xmlns:helpers="using:LabBill.Helpers"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <helpers:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffsetConverter" />
+    </Page.Resources>
     <Grid x:Name="ContentArea">
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <CalendarDatePicker 
+                x:Name="date_picker"
+                PlaceholderText="选择日期" 
+                Header="Calendar" 
+                Date="{x:Bind ViewModel.Bill.DateTime, 
+                    Converter={StaticResource DateTimeToDateTimeOffsetConverter}, 
+                    Mode=TwoWay
+                }"
+                />
+            <StackPanel Orientation="Horizontal">
+                <RadioButtons
+                x:Name="people_radioBtn"
+                Header="账单主体"
+                MaxColumns="5"
+                SelectedIndex="2"
+                ItemsSource="{x:Bind ViewModel.People}"
+                SelectedItem="{x:Bind ViewModel.Bill.Person}"/>
+            </StackPanel>
+            <Button Content="添加人员">
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <TextBox 
+                                x:Name="newPersonName_flyout" 
+                                Margin="5,0,0,5" 
+                                PlaceholderText="人员名称"/>
+                            <Button 
+                                Click="AddNewPerson"
+                                Content="添加" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+        <RadioButtons
+            Grid.Row="1"
+            x:Name="orderType_radioBtn"
+            Header="订单种类" 
+            MaxColumns="10"
+            SelectedIndex="2"
+            ItemsSource="{x:Bind OrderTypes}"
+            SelectionChanged="OrderType_RadioButton_Checked"/>
+        <StackPanel 
+            Orientation="Horizontal" 
+            Grid.Row="2">
+            <RadioButtons
+                x:Name="billType_radioBtn"
+                Header="报销类型" 
+                MaxColumns="2"
+                SelectedIndex="1"
+                ItemsSource="{x:Bind BillTypes}"
+                SelectionChanged="BillType_RadioButton_Checked"/>
+            <RadioButtons
+                x:Name="billState_radioBtn"
+                Header="订单状态" 
+                MaxColumns="2"
+                SelectedIndex="1"
+                ItemsSource="{x:Bind BillStates}"
+                SelectionChanged="BillState_RadioButton_Checked"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3">
+            <NumberBox 
+                Header="价格" 
+                Value="{x:Bind ViewModel.Bill.Price}" 
+                PlaceholderText="0.0" 
+                AcceptsExpression="True" 
+                />
+            <TextBlock Text="简介"/>
+            <TextBox Text="{x:Bind ViewModel.Bill.Brief}"
+                     PlaceholderText="这是消费简介"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="4">
+            <TextBlock Text="详情"/>
+            <TextBox Text="{x:Bind ViewModel.Bill.Content}"
+                     TextWrapping="Wrap"/>
+            <TextBlock Text="附件"/>
+            
+        </StackPanel>
     </Grid>
 </Page>
