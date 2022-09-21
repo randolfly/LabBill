@@ -24,8 +24,22 @@ public class BillConfigViewModel : ObservableRecipient
 
     public ObservableCollection<Person> People = new();
 
-    private readonly IBillDataService _billDataService;
+    public ObservableCollection<AssetInfo> AssetInfos { get; set; } = new ObservableCollection<AssetInfo>();
 
+    private AssetInfo _selectedAsset;
+    public AssetInfo SelectedAsset
+    {
+        get
+        {
+            return _selectedAsset;
+        }
+        set
+        {
+            SetProperty(ref _selectedAsset, value);
+        }
+    }
+
+    private readonly IBillDataService _billDataService;
 
     public BillConfigViewModel(IBillDataService billDataService)
     {
