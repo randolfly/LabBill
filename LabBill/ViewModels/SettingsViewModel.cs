@@ -8,7 +8,6 @@ using LabBill.Contracts.Services;
 using LabBill.Helpers;
 
 using Microsoft.UI.Xaml;
-
 using Windows.ApplicationModel;
 
 namespace LabBill.ViewModels;
@@ -16,8 +15,22 @@ namespace LabBill.ViewModels;
 public class SettingsViewModel : ObservableRecipient
 {
     private readonly IThemeSelectorService _themeSelectorService;
+    private readonly IAssetPathSelectorService _assetPathSelectorService;
+
     private ElementTheme _elementTheme;
     private string _versionDescription;
+    private string _folderPath;
+    public string FolderPath
+    {
+        get
+        {
+            return _folderPath;
+        }
+        set
+        {
+            SetProperty(ref _folderPath, value);
+        }
+    }
 
     public ElementTheme ElementTheme
     {
@@ -36,10 +49,12 @@ public class SettingsViewModel : ObservableRecipient
         get;
     }
 
-    public SettingsViewModel(IThemeSelectorService themeSelectorService)
+    public SettingsViewModel(IThemeSelectorService themeSelectorService, IAssetPathSelectorService assetPathSelectorService)
     {
+        _assetPathSelectorService = assetPathSelectorService;
         _themeSelectorService = themeSelectorService;
         _elementTheme = _themeSelectorService.Theme;
+        _folderPath = _assetPathSelectorService.AssetPath;
         _versionDescription = GetVersionDescription();
 
         SwitchThemeCommand = new RelayCommand<ElementTheme>(
@@ -69,5 +84,11 @@ public class SettingsViewModel : ObservableRecipient
         }
 
         return $"{"AppDisplayName".GetLocalized()} - {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+    }
+
+    public async void selectAssetDirPath(string assetDirPath)
+    {
+        FolderPath = assetDirPath;
+        await _assetPathSelectorService.SetAssetPathAsync(assetDirPath);
     }
 }

@@ -50,7 +50,19 @@
                     </RadioButton>
                 </StackPanel>
             </StackPanel>
-
+            <TextBlock Text="文件存储位置" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="assetDirPath"
+                           Text="{x:Bind ViewModel.FolderPath, Mode=TwoWay}"/>
+                <Button Click="Button_Click" 
+                        Content="选取附件存储地址"
+                        Grid.Column="1"/>
+            </Grid>
+            
             <TextBlock x:Uid="Settings_About" Style="{ThemeResource SubtitleTextBlockStyle}" />
 
             <StackPanel Margin="{StaticResource XSmallTopMargin}">
