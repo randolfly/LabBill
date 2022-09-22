@@ -2,13 +2,14 @@
 using LabBill.Core.Domains;
 using LabBill.Core.Models;
 using LabBill.ViewModels;
-
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Web.WebView2.Core;
+using Serilog;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
@@ -86,15 +87,34 @@ public sealed partial class BillConfigPage : Page
     {
         var personName = newPersonName_flyout.Text ?? "randolf";
         ViewModel.AddNewPerson(personName);
+        ViewModel.Bill.Person = ViewModel.People.Last();
+        people_radioBtn.SelectedItem = ViewModel.People.Last();
     }
 
-    private void AddNewBill(object sender, RoutedEventArgs e)
+    private async void AddNewBill(object sender, RoutedEventArgs e)
     {
-        ViewModel.AddNewBill();
-        WebView2.CoreWebView2.Navigate("https://randolfly.github.io/");
+        if (ViewModel.Bill.Person == null)
+        {
+            ContentDialog noPersonDialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            noPersonDialog.XamlRoot = this.XamlRoot;
+            noPersonDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            noPersonDialog.Title = "No Person Selection";
+            noPersonDialog.CloseButtonText = "Ok";
+            noPersonDialog.DefaultButton = ContentDialogButton.Primary;
+            noPersonDialog.Content = "Please choose 1 person";
+
+            var result = await noPersonDialog.ShowAsync();
+
+        }
+        else
+        {
+            ViewModel.AddNewBill();
+        }
     }
 
-    private void DropOver_ListView(object sender, DragEventArgs e)
+    private void DragOver_ListView(object sender, DragEventArgs e)
     {
         // Trash only accepts text
         e.AcceptedOperation = DataPackageOperation.Link;
@@ -102,21 +122,42 @@ public sealed partial class BillConfigPage : Page
 
     private async void Drop_ListView(object sender, DragEventArgs e)
     {
-        // 好像有时会引起未知的Win32异常
+        // FIXME: 提交订单后无法插入新Asset
         if (e.DataView.Contains(StandardDataFormats.StorageItems))
         {
+            DragOperationDeferral def = e.GetDeferral();
             var items = await e.DataView.GetStorageItemsAsync();
             if (items.Count > 0)
             {
                 ViewModel.AddAssets(items);
             }
-        }
+            e.AcceptedOperation = DataPackageOperation.Link;
+            def.Complete();
+        }       
     }
 
     private void AssetInfos_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        string pdfPath = ViewModel.SelectedAsset.AssetLink;
-        // MessageBox.Show("预览PDF");
-        WebView2.CoreWebView2.Navigate(pdfPath);
+        try
+        {
+            string pdfPath = ViewModel.SelectedAsset.AssetLink;
+            // MessageBox.Show("预览PDF");
+            WebView2.CoreWebView2.Navigate(pdfPath);
+        }
+        catch (System.NullReferenceException)
+        {
+            // delete the ViewModel.SelectedAsset
+            WebView2.CoreWebView2.Navigate("https://randolfly.github.io/");
+        }
+    }
+
+    private void AssetInfos_ListView_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Delete)
+        {
+            Log.Information("Delete Selected Assets!");
+            ViewModel.AssetInfos.Remove(ViewModel.SelectedAsset);
+            ViewModel.SelectedAsset = new AssetInfo();
+        }
     }
 }

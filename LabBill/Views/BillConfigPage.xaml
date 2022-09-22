@@ -70,7 +70,6 @@
                 x:Name="people_radioBtn"
                 Header="账单主体"
                 MaxColumns="10"
-                SelectedIndex="2"
                 ItemsSource="{x:Bind ViewModel.People}"
                 SelectedItem="{x:Bind ViewModel.Bill.Person, Mode=TwoWay}"/>
             <Button Content="添加人员">
@@ -151,11 +150,12 @@
                     SelectionMode="Single"
                     SelectedItem="{x:Bind ViewModel.SelectedAsset, Mode=TwoWay}"
                     SelectionChanged="AssetInfos_ListView_SelectionChanged"
+                    KeyDown="AssetInfos_ListView_KeyDown"
                     BorderThickness="1"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
                     MinWidth="350" 
                     MinHeight="400"
-                    DragOver="DropOver_ListView"
+                    DragOver="DragOver_ListView"
                     Drop="Drop_ListView"
                     Margin="12"/>
                 <controls:WebView2 

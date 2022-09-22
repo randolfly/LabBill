@@ -29,6 +29,7 @@ public class BillConfigViewModel : ObservableRecipient
 
     public ObservableCollection<Person> People = new();
 
+
     public ObservableCollection<AssetInfo> AssetInfos { get; set; } = new ObservableCollection<AssetInfo>();
 
     private AssetInfo _selectedAsset;
@@ -127,6 +128,5 @@ public class BillConfigViewModel : ObservableRecipient
         _billDataService.updateBill(Bill);
         Bill = new Bill { DateTime = DateTime.Now };
         AssetInfos.Clear();
-        SelectedAsset = new AssetInfo();
     }
 }
