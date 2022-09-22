@@ -14,5 +14,7 @@ public interface IAssetPathSelectorService
     }
 
     Task InitializeAsync();
+
+    Task<string> GetAssetPathAsync();
     Task SetAssetPathAsync(string dirPath);
 }

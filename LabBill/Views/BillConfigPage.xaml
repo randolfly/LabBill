@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:domains="using:LabBill.Core.Domains" 
     xmlns:helpers="using:LabBill.Helpers"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
     <Page.Resources>
         <helpers:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffsetConverter" />
@@ -30,19 +31,16 @@
                          Fill="{ThemeResource SystemControlBackgroundBaseMediumBrush}"/>
                 <TextBlock Grid.Column="1"
                            Text="{x:Bind AssetLink}"
-                           x:Phase="1"
-                           Style="{ThemeResource BaseTextBlockStyle}"
-                           Margin="12,6,0,0"/>
+                           Style="{ThemeResource BaseTextBlockStyle}"/>
                 <TextBlock Grid.Column="1"
                            Grid.Row="1"
                            Text="{x:Bind Comment}"
-                           x:Phase="2"
-                           Style="{ThemeResource BodyTextBlockStyle}"
-                           Margin="12,0,0,6"/>
+                           Style="{ThemeResource BodyTextBlockStyle}"/>
             </Grid>
         </DataTemplate>
         
     </Page.Resources>
+    <ScrollViewer>
     <Grid x:Name="ContentArea">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -55,14 +53,18 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <CalendarDatePicker 
-                x:Name="date_picker"
-                PlaceholderText="选择日期" 
-                Header="Calendar" 
-                Date="{x:Bind ViewModel.Bill.DateTime, 
-                    Converter={StaticResource DateTimeToDateTimeOffsetConverter}, 
-                    Mode=TwoWay}"
-                />
+        <StackPanel Orientation="Horizontal">
+            <CalendarDatePicker 
+            x:Name="date_picker"
+            PlaceholderText="选择日期" 
+            Header="Calendar" 
+            Date="{x:Bind ViewModel.Bill.DateTime, 
+                Converter={StaticResource DateTimeToDateTimeOffsetConverter}, 
+                Mode=TwoWay}"
+            />
+            <Button Content="提交账单"
+                    Click="AddNewBill"/>
+        </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0">
             <RadioButtons
                 x:Name="people_radioBtn"
@@ -70,7 +72,7 @@
                 MaxColumns="10"
                 SelectedIndex="2"
                 ItemsSource="{x:Bind ViewModel.People}"
-                SelectedItem="{x:Bind ViewModel.Bill.Person}"/>
+                SelectedItem="{x:Bind ViewModel.Bill.Person, Mode=TwoWay}"/>
             <Button Content="添加人员">
                 <Button.Flyout>
                     <Flyout>
@@ -88,7 +90,6 @@
             </Button>
         </StackPanel>
         <RadioButtons
-            Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="2"
             x:Name="orderType_radioBtn"
@@ -118,16 +119,18 @@
         <StackPanel Grid.Row="3">
             <TextBlock Text="订单价格" Style="{StaticResource SubheaderTextBlockStyle}"/>
             <NumberBox 
-                Value="{x:Bind ViewModel.Bill.Price, Converter={StaticResource DecimalToDoubleConverter}}" 
+                Value="{x:Bind ViewModel.Bill.Price, 
+                Converter={StaticResource DecimalToDoubleConverter},
+                Mode=TwoWay}" 
                 PlaceholderText="0.0" 
                 AcceptsExpression="True"/>
         </StackPanel>
         <StackPanel Grid.Row="3" Grid.Column="1">
             <TextBlock Text="订单简介" Style="{StaticResource SubheaderTextBlockStyle}"/>
-            <TextBox Text="{x:Bind ViewModel.Bill.Brief}"
+            <TextBox Text="{x:Bind ViewModel.Bill.Brief, Mode=TwoWay}"
                  PlaceholderText="消费简介"/>
         </StackPanel>
-        <TextBox Text="{x:Bind ViewModel.Bill.Content}"
+            <TextBox Text="{x:Bind ViewModel.Bill.Content, Mode=TwoWay}"
                  PlaceholderText="订单详情"
                  Grid.Row="4"
                  TextWrapping="Wrap"/>
@@ -135,14 +138,19 @@
                  Grid.Column="1">
             <TextBlock Text="附件"
                        Style="{StaticResource BodyTextBlockStyle}"/>
-            <ListView
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ListView
                     x:Name="AssetInfos_ListView"
                     ItemTemplate="{StaticResource AssetListViewTemplate}"
-                    ItemsSource="{x:Bind ViewModel.SelectedAsset, Mode=TwoWay}"
-                    CanDragItems="True"
-                    CanReorderItems="True"
+                    ItemsSource="{x:Bind ViewModel.AssetInfos, Mode=TwoWay}"
                     AllowDrop="True"
-                    SelectionMode="Single" 
+                    SelectionMode="Single"
+                    SelectedItem="{x:Bind ViewModel.SelectedAsset, Mode=TwoWay}"
+                    SelectionChanged="AssetInfos_ListView_SelectionChanged"
                     BorderThickness="1"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
                     MinWidth="350" 
@@ -150,6 +158,14 @@
                     DragOver="DropOver_ListView"
                     Drop="Drop_ListView"
                     Margin="12"/>
+                <controls:WebView2 
+                    x:Name="WebView2"
+                    Grid.Column ="1"
+                    Source="https://randolfly.github.io/" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch"/>
+            </Grid>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </Page>

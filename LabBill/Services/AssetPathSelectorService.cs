@@ -26,8 +26,14 @@ public class AssetPathSelectorService : IAssetPathSelectorService
 
     public async Task InitializeAsync()
     {
-        AssetPath = await _localSettingsService.ReadSettingAsync<string>(SettingsKey) ?? Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        AssetPath = await GetAssetPathAsync();
         await Task.CompletedTask;
+    }
+
+    public async Task<string> GetAssetPathAsync()
+    {
+        AssetPath = await _localSettingsService.ReadSettingAsync<string>(SettingsKey) ?? Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        return AssetPath;
     }
     public async Task SetAssetPathAsync(string dirPath)
     {

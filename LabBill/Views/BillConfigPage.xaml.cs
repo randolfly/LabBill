@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Web.WebView2.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
@@ -85,26 +86,37 @@ public sealed partial class BillConfigPage : Page
     {
         var personName = newPersonName_flyout.Text ?? "randolf";
         ViewModel.AddNewPerson(personName);
-        
     }
+
+    private void AddNewBill(object sender, RoutedEventArgs e)
+    {
+        ViewModel.AddNewBill();
+        WebView2.CoreWebView2.Navigate("https://randolfly.github.io/");
+    }
+
     private void DropOver_ListView(object sender, DragEventArgs e)
     {
         // Trash only accepts text
-        e.AcceptedOperation = DataPackageOperation.Copy; 
+        e.AcceptedOperation = DataPackageOperation.Link;
     }
 
     private async void Drop_ListView(object sender, DragEventArgs e)
     {
+        // 好像有时会引起未知的Win32异常
         if (e.DataView.Contains(StandardDataFormats.StorageItems))
         {
             var items = await e.DataView.GetStorageItemsAsync();
             if (items.Count > 0)
             {
-                var storageFile = items[0] as StorageFile;
-                var bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(await storageFile.OpenAsync(FileAccessMode.Read));
-                // Set the image on the main page to the dropped image
+                ViewModel.AddAssets(items);
             }
         }
+    }
+
+    private void AssetInfos_ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        string pdfPath = ViewModel.SelectedAsset.AssetLink;
+        // MessageBox.Show("预览PDF");
+        WebView2.CoreWebView2.Navigate(pdfPath);
     }
 }
