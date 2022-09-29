@@ -9,17 +9,17 @@ namespace LabBill.Core.Contracts.Services;
 public interface IBillDataService
 {
     #region Person Interface
-    public void addPerson(Person person);
-    public bool delPerson(Person person);
-    public IEnumerable<Person> getAllPeople();
-    public Person updatePerson(Person person);
+    public void AddPerson(Person person);
+    public bool DelPerson(Person person);
+    public IEnumerable<Person> GetAllPeople();
+    public Person UpdatePerson(Person person);
     #endregion
 
     #region Bill Interface
-    public Bill updateBill(Bill bill);
-    public bool deleteBill(int id);
-    public IEnumerable<Bill> getAllBills();
-    public IEnumerable<Bill> getAllUnFinishedBills();
-    public IEnumerable<Bill> getAllFinishedBills();
+    public Bill UpdateBill(Bill bill);
+    public bool DeleteBill(int id);
+    public IEnumerable<Bill> GetAllBills();
+    public IEnumerable<Bill> GetAllUnFinishedBills();
+    public IEnumerable<Bill> GetAllFinishedBills();
     #endregion
 }

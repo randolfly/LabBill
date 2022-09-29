@@ -12,7 +12,7 @@ using Serilog;
 namespace LabBill.Core.Services;
 public class BillDataService : IBillDataService
 {
-    public void addPerson(Person person)
+    public void AddPerson(Person person)
     {
         using var db = new BillContext();
         var containsPerson = db.People.Any(x => x.Name == person.Name);
@@ -23,7 +23,7 @@ public class BillDataService : IBillDataService
             db.SaveChanges();
         }
     }
-    public bool deleteBill(int id)
+    public bool DeleteBill(int id)
     {
         using var db = new BillContext();
         try
@@ -39,8 +39,8 @@ public class BillDataService : IBillDataService
             return false;
         }
     }
-    public bool delPerson(Person person) => throw new NotImplementedException();
-    public IEnumerable<Bill> getAllBills()
+    public bool DelPerson(Person person) => throw new NotImplementedException();
+    public IEnumerable<Bill> GetAllBills()
     {
         using var db = new BillContext();
         var bills = db.Bills
@@ -49,7 +49,7 @@ public class BillDataService : IBillDataService
             .ToList();
         return bills;
     }
-    public IEnumerable<Bill> getAllFinishedBills()
+    public IEnumerable<Bill> GetAllFinishedBills()
     {
         using var db = new BillContext();
         var bills = db.Bills
@@ -60,7 +60,7 @@ public class BillDataService : IBillDataService
         return bills;
     }
 
-    public IEnumerable<Person> getAllPeople()
+    public IEnumerable<Person> GetAllPeople()
     {
         using var db = new BillContext();
         try
@@ -77,7 +77,7 @@ public class BillDataService : IBillDataService
         }
     }
 
-    public IEnumerable<Bill> getAllUnFinishedBills()
+    public IEnumerable<Bill> GetAllUnFinishedBills()
     {
         using var db = new BillContext();
         var bills = db.Bills
@@ -88,14 +88,14 @@ public class BillDataService : IBillDataService
         return bills;
     }
 
-    public Bill updateBill(Bill bill)
+    public Bill UpdateBill(Bill bill)
     {
         using var db = new BillContext();
         db.Bills.Update(bill);
         db.SaveChanges();
         return bill;
     }
-    public Person updatePerson(Person person)
+    public Person UpdatePerson(Person person)
     {
         using var db = new BillContext();
         db.People.Update(person);

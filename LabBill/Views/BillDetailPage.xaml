@@ -5,30 +5,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:models="using:LabBill.Core.Models"
+    xmlns:models="using:LabBill.Core.Domains"
     xmlns:views="using:LabBill.Views"
     xmlns:behaviors="using:LabBill.Behaviors"
     behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="ItemTemplate" x:DataType="models:SampleOrder">
+        <DataTemplate x:Key="ItemTemplate" x:DataType="models:Bill">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <FontIcon
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    FontSize="32"
-                    Glyph="{x:Bind Symbol}"
-                    AutomationProperties.Name="{x:Bind SymbolName}" />
                 <StackPanel
                     Grid.Column="1"
                     Margin="{StaticResource SmallLeftMargin}"
                     VerticalAlignment="Center">
-                    <TextBlock Text="{x:Bind Company}" Style="{StaticResource ListTitleStyle}" />
-                    <TextBlock Text="{x:Bind Status}" Style="{StaticResource ListSubTitleStyle}" />
+                    <TextBlock Text="{x:Bind DateTime}" Style="{StaticResource ListTitleStyle}" />
+                    <TextBlock Text="{x:Bind Price}" Style="{StaticResource ListSubTitleStyle}" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -90,11 +84,11 @@
             Background="Transparent"
             BorderBrush="Transparent"
             DetailsTemplate="{StaticResource DetailsTemplate}"
-            ItemsSource="{x:Bind ViewModel.SampleItems}"
+            ItemsSource="{x:Bind ViewModel.Bills}"
             ItemTemplate="{StaticResource ItemTemplate}"
             ListHeaderTemplate="{StaticResource MinimalListHeaderTemplate}"
             NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+            SelectedItem="{x:Bind ViewModel.SelectedBill, Mode=TwoWay}"
             ViewStateChanged="OnViewStateChanged"/>
     </Grid>
 </Page>

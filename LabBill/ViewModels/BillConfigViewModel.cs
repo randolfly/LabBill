@@ -58,7 +58,7 @@ public class BillConfigViewModel : ObservableRecipient
         _assetPathSelectorService = assetPathSelectorService;
 
         People.Clear();
-        var people = _billDataService.getAllPeople();
+        var people = _billDataService.GetAllPeople();
         foreach (var person in people)
         {
             People.Add(person);
@@ -74,10 +74,10 @@ public class BillConfigViewModel : ObservableRecipient
             Name = personName
         };
 
-        _billDataService.addPerson(newPerson);
+        _billDataService.AddPerson(newPerson);
 
         People.Clear();
-        var people = _billDataService.getAllPeople();
+        var people = _billDataService.GetAllPeople();
         foreach (var person in people)
         {
             People.Add(person);
@@ -125,7 +125,7 @@ public class BillConfigViewModel : ObservableRecipient
                 asset.AssetLink = relPath;
             }
         }
-        _billDataService.updateBill(Bill);
+        _billDataService.UpdateBill(Bill);
         Bill = new Bill { DateTime = DateTime.Now };
         AssetInfos.Clear();
     }

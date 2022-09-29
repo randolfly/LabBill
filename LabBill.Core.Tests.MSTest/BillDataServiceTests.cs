@@ -45,9 +45,9 @@ public class BillDataServiceTests
             DateTime = DateTime.Now
         };
 
-        _cashDataService.updateBill(bill);
+        _cashDataService.UpdateBill(bill);
 
-        var billCheck = _cashDataService.getAllBills().Last();
+        var billCheck = _cashDataService.GetAllBills().Last();
         Assert.IsNotNull(billCheck);
         Assert.IsNotNull(billCheck.AssetInfos);
 
